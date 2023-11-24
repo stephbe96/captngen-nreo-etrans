@@ -13,7 +13,7 @@ PROGRAM GENCAP
     character(len=2) :: spinString(2) = [character(len=2) :: "SI", "SD"]
     character(len=9) :: outfile(7) = [character(len=9) :: "const.dat","qm1.dat","q1.dat","q2.dat","vm1.dat","v1.dat","v2.dat"]
     integer :: nq(7) = [integer :: 0, -1, 1, 2,  0, 0, 0] ! Choose velocity and momentum transfer powers in differential cross-section
-    integer :: nv(7) = [integer :: 0,  0, 0, 0, -1, 1, 2]
+    integer :: nv(7) = [integer :: 0,  0, 0, 0, -1, 1, 2] !nq power
 !-----------------------------------------------------------------------------------------------------------------------------------
 ! Variables used for the energy transport calculation
     integer :: transport_formalism, nlines
