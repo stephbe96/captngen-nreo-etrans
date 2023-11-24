@@ -12,7 +12,7 @@ module opermod
     implicit none
     double precision, parameter :: hbar=6.582d-25 !GeV*s
     !this goes with the Serenelli table format
-    
+
     double precision, parameter :: AtomicNumber_oper(16) = (/ 1., 3., 4., 12., 14., 16., 20., 23., 24., 27., &
                                                         28., 32., 40., 40., 56., 58./) !the isotopes the catena paper uses
     character (len=4) :: isotopes(16) = [character(len=4) :: "H","He3","He4","C12","N14","O16","Ne20","Na23","Mg24", &
@@ -26,7 +26,7 @@ module opermod
     integer :: q_shared
     logical :: w_shared
     !$OMP threadprivate(q_shared, w_shared)
-    
+
     contains
 
     ! having removed the scaling momentum, are the units off here? I'm looking at the p/c0 in particular
@@ -44,7 +44,7 @@ module opermod
         endif
         GFFI_H_oper = G
     end function GFFI_H_oper
-    
+
     function GFFI_A_oper(w,vesc,A,mq)
         double precision :: p, mu,w,vesc,u,muplus,mN,A,Ei,B
         double precision :: dgamic,GFFI_A_oper
@@ -71,7 +71,7 @@ subroutine captn_init_oper()
     integer :: i, j, k, l, m
     character (len=2) :: terms(7) = [character(len=2) :: "y0", "y1", "y2", "y3", "y4", "y5", "y6"]
     real :: WM, WS2, WS1, WP2, WMP2, WP1, WD, WS1D
-    
+
     ! tab_mfr_oper is allocated in the get_solar_params subroutine
     ! take the regular array tab_mfr and extract the isotopes used in the 1501.03729 paper (otherwise indices won't match on arrays)
     do i=1,nlines
@@ -92,7 +92,7 @@ subroutine captn_init_oper()
         tab_mfr_oper(i,15) = tab_mfr(i,27)
         tab_mfr_oper(i,16) = tab_mfr(i,29)
     end do
-    
+
     ! this array stores each of the constants of the W polynomials from paper 1501.03729's appendix individually
     ! array index m handles the 8 varients of the W functions in order [M, S", S', P", MP", P', Delta, S'Delta]
     ! index i handles the 16 isotopes [H, He3, He4, C12, N14, O16, Ne20, Na 23, Mg24, Al27, Si28, S32, Ar40, Ca40, Fe56, Ni58]
@@ -154,7 +154,7 @@ function integrand_oper(u, foveru)
 
     w = sqrt(u**2+vesc_shared_arr(rindex_shared)**2)
 
-    !Switch depending on whether we are capturing on Hydrogen or not
+    !Switch depending on whether we are capturing on Hydrogen or nott
     if (a_shared .gt. 2.d0) then
         integrand_oper = foveru(u)*GFFI_A_oper(w,vesc_shared_arr(rindex_shared),a_shared,q_shared)
     else
@@ -189,24 +189,24 @@ subroutine captn_oper(mx_in, jx_in, niso, capped)!, isotopeChosen)
     double precision :: epsabs, epsrel, abserr, neval !for integrator
     double precision :: ier,alist,blist,rlist,elist,iord,last !for integrator
     ! double precision, allocatable :: u_int_res(:)
-    
+
     ! specific to captn_oper
     integer :: funcType, tau, taup, term_R, term_W, q_pow, w_pow ! loop indicies
     integer :: q_functype, q_index
     double precision :: J, j_chi, RFuncConst, WFuncConst, mu_T, prefactor_functype, factor_final, prefactor_current
     double precision :: RD, RM, RMP2, RP1, RP2, RS1, RS1D, RS2 !R functions stored in their own source files
     double precision :: prefactor_array(niso,11,2)
-    
+
     dimension alist(1000),blist(1000),elist(1000),iord(1000),rlist(1000)!for integrator
-    
+
     epsabs=1.d-6
     epsrel=1.d-6
     limit=1000
 
     mdm = mx_in
     j_chi = jx_in
-    
-    if (.not. allocated(tab_r)) then 
+
+    if (.not. allocated(tab_r)) then
         print*,"Errorface of errors: you haven't called captn_init to load the solar model!"
         return
     end if
@@ -246,7 +246,7 @@ subroutine captn_oper(mx_in, jx_in, niso, capped)!, isotopeChosen)
 
                     ! the possible y-terms for each W function in order: y^0, y^1, y^2, y^3, y^4, y^5, y^6
                     do term_W = 1,7
-                        
+
                         WFuncConst = W_array(funcType,eli,tau,taup,term_W)
 
                         ! skip if the result gets multiplied by zero in the WFunction
@@ -296,7 +296,7 @@ subroutine captn_oper(mx_in, jx_in, niso, capped)!, isotopeChosen)
                                         ! this is the +w^2 contribution
                                         ! it has the same q^2 contribution, but has a v_perp^2 contribution
                                         prefactor_array(eli,q_index,2) = prefactor_array(eli,q_index,2) + prefactor_current
-                                        
+
                                     else
                                         prefactor_array(eli,q_index,1) = prefactor_array(eli,q_index,1) + prefactor_current
 
